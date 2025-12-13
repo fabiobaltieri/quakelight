@@ -537,8 +537,11 @@
       "+5V_DCDC": "rgb(0, 0, 194)",
       "+5V_USB": "rgb(0, 0, 132)",
       "/SPI1_MOSI": "rgb(255, 0, 255)",
+      "/SPI1_SCK": "rgb(255, 0, 255)",
       "/SPI2_MOSI": "rgb(255, 0, 255)",
+      "/SPI2_SCK": "rgb(255, 0, 255)",
       "/SPI3_MOSI": "rgb(255, 0, 255)",
+      "/SPI3_SCK": "rgb(255, 0, 255)",
       "GND": "rgb(132, 132, 132)"
     },
     "netclass_assignments": {
