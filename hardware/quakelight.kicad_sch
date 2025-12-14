@@ -8372,9 +8372,9 @@
 		)
 		(uuid "32d4aa48-e0eb-4d4b-b059-919c8f6ad087")
 	)
-	(text "|-----length match-----|"
+	(text "|---length match---|"
 		(exclude_from_sim no)
-		(at 191.77 154.94 90)
+		(at 191.77 149.86 90)
 		(effects
 			(font
 				(size 1.27 1.27)
