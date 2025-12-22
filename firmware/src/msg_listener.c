@@ -21,11 +21,11 @@ static void wait_ip(void)
 	iface = net_if_get_default();
 
 	while (true) {
-		if (iface->config.ip.ipv4->unicast[0].ipv4.is_used) {
+		if (net_if_is_up(iface)) {
 			return;
 		}
 
-		k_sleep(K_SECONDS(1));
+		k_sleep(K_MSEC(200));
 	}
 }
 
