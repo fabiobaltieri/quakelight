@@ -20,7 +20,32 @@
 		spi-one-frame = <0x70>;
 		spi-zero-frame = <0x40>;
 	};
+};
 
+&pinctrl {
+	i2s_default: i2s_default {
+		group1 {
+			pinmux = <I2S_O_SD_GPIO2>;
+		};
+	};
+};
+
+&i2s {
+	status = "okay";
+
+	pinctrl-0 = <&i2s_default>;
+	pinctrl-names = "default";
+
+	leds_2: ws2812@0 {
+		compatible = "worldsemi,ws2812-i2s";
+		reg = <0>;
+
+		chain-length = <370>;
+		color-mapping = <LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED
+				 LED_COLOR_ID_BLUE>;
+		reset-delay = <500>;
+	};
 };
 
 &dma {
