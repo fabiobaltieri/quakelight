@@ -9,6 +9,10 @@ static const struct led_dt_spec led_b = LED_DT_SPEC_GET_OR(DT_NODELABEL(led_b), 
 
 static void blink_worker(struct k_work *work)
 {
+	if (!led_b.dev) {
+		return;
+	}
+
 	led_off_dt(&led_b);
 }
 
@@ -16,6 +20,10 @@ static K_WORK_DELAYABLE_DEFINE(blink_work, blink_worker);
 
 void blink(void)
 {
+	if (!led_b.dev) {
+		return;
+	}
+
 	led_on_dt(&led_b);
 
 	k_work_reschedule(&blink_work, K_MSEC(100));
@@ -23,5 +31,9 @@ void blink(void)
 
 void ready(void)
 {
+	if (!led_a.dev) {
+		return;
+	}
+
 	led_on_dt(&led_a);
 }
