@@ -1,0 +1,45 @@
+#include <zephyr/dt-bindings/led/led.h>
+
+&flash0 {
+	partitions {
+		partition@100 {
+			reg = <0x100 (DT_SIZE_M(2) - 0x100 - 0x10000)>;
+		};
+
+		storage_partition: partition@1f0000 {
+			label = "storage";
+			reg = <(DT_SIZE_M(2) - 0x10000) 0x00010000>;
+		};
+	};
+};
+
+&pinctrl {
+	ws2812_pio1_default: ws2812_pio1_default {
+		ws2812 {
+			pinmux = <PIO1_P2>;
+		};
+	};
+};
+
+&pio1 {
+	status = "okay";
+
+	pio-ws2812 {
+		compatible = "worldsemi,ws2812-rpi_pico-pio";
+		status = "okay";
+		pinctrl-0 = <&ws2812_pio1_default>;
+		pinctrl-names = "default";
+		bit-waveform = <3>, <3>, <4>;
+
+		leds_1: ws2812 {
+			status = "okay";
+			gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
+			chain-length = <370>;
+			color-mapping = <LED_COLOR_ID_GREEN
+					 LED_COLOR_ID_RED
+					 LED_COLOR_ID_BLUE>;
+			reset-delay = <280>;
+			frequency = <800000>;
+		};
+	};
+};
