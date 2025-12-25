@@ -11,6 +11,7 @@ target_sources(app PRIVATE
 	src/main.c
 	src/msg_listener.c
 	src/net_led.c
+	src/temp.c
 )
 
 target_sources_ifdef(CONFIG_WIFI app PRIVATE src/wifi_creds.c)
