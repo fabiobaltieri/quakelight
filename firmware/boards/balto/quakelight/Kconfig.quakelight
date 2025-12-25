@@ -1,0 +1,2 @@
+config BOARD_QUAKELIGHT
+	select SOC_STM32H573XX

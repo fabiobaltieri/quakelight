@@ -1,0 +1,10 @@
+if BOARD_QUAKELIGHT
+
+if NETWORKING
+
+config NET_L2_ETHERNET
+	default y
+
+endif
+
+endif

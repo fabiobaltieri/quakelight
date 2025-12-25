@@ -1,0 +1,239 @@
+/dts-v1/;
+#include <st/h5/stm32h573Xi.dtsi>
+#include <st/h5/stm32h573rivx-pinctrl.dtsi>
+#include <zephyr/dt-bindings/input/input-event-codes.h>
+#include <zephyr/dt-bindings/mipi_dbi/mipi_dbi.h>
+#include <zephyr/dt-bindings/led/led.h>
+
+/ {
+	model = "Quakelight";
+	compatible = "balto,quakelight";
+
+	chosen {
+		zephyr,console = &usart1;
+		zephyr,shell-uart = &usart1;
+		zephyr,sram = &sram1;
+		zephyr,flash = &flash0;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		led_a: led_a {
+			gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>;
+		};
+
+		led_b: led_b {
+			gpios = <&gpioc 2 GPIO_ACTIVE_HIGH>;
+		};
+
+		eth_led: eth_led_0 {
+			gpios = <&gpiob 13 GPIO_ACTIVE_LOW>;
+		};
+	};
+
+	gpio_keys {
+		compatible = "gpio-keys";
+
+		sw0 {
+			gpios = <&gpioa 3 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+			zephyr,code = <INPUT_KEY_0>;
+		};
+
+		sw1 {
+			gpios = <&gpiob 8 GPIO_ACTIVE_HIGH>;
+			zephyr,code = <INPUT_KEY_1>;
+		};
+	};
+
+	aliases {
+		led0 = &led_a;
+		watchdog0 = &iwdg;
+		die-temp0 = &die_temp;
+		die-temp1 = &digi_die_temp;
+		volt-sensor0 = &vref;
+		volt-sensor1 = &vbat;
+	};
+};
+
+&clk_hsi48 {
+	status = "okay";
+};
+
+&clk_hse {
+	clock-frequency = <DT_FREQ_M(25)>;
+	status = "okay";
+};
+
+&pll {
+	div-m = <5>;
+	mul-n = <96>;
+	div-p = <2>;
+	div-q = <6>;
+	div-r = <2>;
+	clocks = <&clk_hse>;
+	status = "okay";
+};
+
+&rcc {
+	clocks = <&pll>;
+	clock-frequency = <DT_FREQ_M(240)>;
+	ahb-prescaler = <1>;
+	apb1-prescaler = <2>;
+	apb2-prescaler = <1>;
+	apb3-prescaler = <1>;
+};
+
+&usart1 {
+	pinctrl-0 = <&usart1_tx_pb6 &usart1_rx_pb7>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+	status = "okay";
+};
+
+&mco1 {
+	clocks = <&rcc STM32_SRC_HSE MCO1_SEL(2)>;
+	prescaler = <MCO1_PRE(MCO_PRE_DIV_1)>;
+	pinctrl-0 = <&rcc_mco_1_pa8>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&aes {
+	status = "okay";
+};
+
+&rng {
+	status = "okay";
+};
+
+&mac {
+	status = "okay";
+	pinctrl-0 = <&eth_rxd0_pc4
+		     &eth_rxd1_pc5
+		     &eth_ref_clk_pa1
+		     &eth_crs_dv_pa7
+		     &eth_tx_en_pa5
+		     &eth_rx_er_pb10
+		     &eth_txd0_pb12
+		     &eth_txd1_pb15>;
+	pinctrl-names = "default";
+	phy-connection-type = "rmii";
+	phy-handle = <&eth_phy>;
+};
+
+&mdio {
+	status = "okay";
+	pinctrl-0 = <&eth_mdio_pa2 &eth_mdc_pc1>;
+	pinctrl-names = "default";
+
+	eth_phy: ethernet-phy@0 {
+		compatible = "microchip,ksz8081";
+		reg = <0x00>;
+		reset-gpios = <&gpiob 14 GPIO_ACTIVE_LOW>;
+		int-gpios = <&gpioa 6 GPIO_ACTIVE_LOW>;
+		microchip,interface-type = "rmii-25MHz";
+	};
+};
+
+&iwdg {
+	status = "okay";
+};
+
+&gpdma1 {
+	status = "okay";
+};
+
+&gpdma2 {
+	status = "okay";
+};
+
+&spi1 {
+	pinctrl-0 = <&spi1_sck_pb3 &spi1_mosi_pb5>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	dmas = <&gpdma1 0 7 STM32_DMA_PERIPH_TX>,
+	       <&gpdma1 1 6 STM32_DMA_PERIPH_RX>;
+	dma-names = "tx", "rx";
+
+	leds_1: apa102@0 {
+		compatible = "apa,apa102";
+		reg = <0>;
+		spi-max-frequency = <DT_FREQ_M(10)>;
+		chain-length = <60>;
+		color-mapping = <LED_COLOR_ID_BLUE
+				 LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED>;
+	};
+};
+
+&spi2 {
+	pinctrl-0 = <&spi2_sck_pa9 &spi2_mosi_pc3>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	dmas = <&gpdma1 2 9 STM32_DMA_PERIPH_TX>,
+	       <&gpdma1 3 8 STM32_DMA_PERIPH_RX>;
+	dma-names = "tx", "rx";
+
+	leds_2: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+
+		reg = <0>;
+		spi-max-frequency = <DT_FREQ_M(4)>;
+
+		chain-length = <370>;
+		color-mapping = <LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED
+				 LED_COLOR_ID_BLUE>;
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+	};
+};
+
+&spi3 {
+	pinctrl-0 = <&spi3_sck_pc10 &spi3_mosi_pc12>;
+	pinctrl-names = "default";
+	status = "okay";
+
+	dmas = <&gpdma1 4 11 STM32_DMA_PERIPH_TX>,
+	       <&gpdma1 5 10 STM32_DMA_PERIPH_RX>;
+	dma-names = "tx", "rx";
+
+	leds_3: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+
+		reg = <0>;
+		spi-max-frequency = <DT_FREQ_M(4)>;
+
+		chain-length = <370>;
+		color-mapping = <LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED
+				 LED_COLOR_ID_BLUE>;
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+	};
+};
+
+zephyr_udc0: &usb {
+	pinctrl-0 = <&usb_dm_pa11 &usb_dp_pa12>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+&die_temp {
+	status = "okay";
+};
+
+&digi_die_temp {
+	status = "okay";
+};
+
+&vref {
+	status = "okay";
+};
+
+&vbat {
+	status = "okay";
+};

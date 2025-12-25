@@ -1,0 +1,6 @@
+board:
+  name: quakelight
+  full_name: QuakeLight
+  vendor: st
+  socs:
+    - name: stm32h573xx

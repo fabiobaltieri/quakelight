@@ -1,4 +1,7 @@
 config ETH_STM32_MULTICAST_FILTER
 	default y
 
+config SPI_STM32_DMA
+	default y
+
 source "Kconfig.zephyr"
