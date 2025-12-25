@@ -1,3 +1,4 @@
+#include <zephyr/dt-bindings/dma/rpi-pico-dma-rp2040.h>
 #include <zephyr/dt-bindings/led/led.h>
 
 &flash0 {
@@ -13,33 +14,64 @@
 	};
 };
 
+&spi0 {
+	dmas = <&dma 0 RPI_PICO_DMA_SLOT_SPI0_TX 0>,
+	       <&dma 1 RPI_PICO_DMA_SLOT_SPI0_RX 0>;
+	dma-names = "tx", "rx";
+
+	leds_1: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+
+		reg = <0>;
+		spi-max-frequency = <DT_FREQ_M(4)>;
+
+		chain-length = <370>;
+		color-mapping = <LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED
+				 LED_COLOR_ID_BLUE>;
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
+	};
+};
+
 &pinctrl {
-	ws2812_pio1_default: ws2812_pio1_default {
-		ws2812 {
-			pinmux = <PIO1_P2>;
+	spi1_default: spi1_default {
+		group1 {
+			pinmux = <SPI1_CSN_P13>, <SPI1_SCK_P10>, <SPI1_TX_P11>;
+		};
+
+		group2 {
+			pinmux = <SPI1_RX_P12>;
+			input-enable;
 		};
 	};
 };
 
-&pio1 {
+&spi1 {
+	clock-frequency = <DT_FREQ_M(8)>;
 	status = "okay";
+	pinctrl-0 = <&spi1_default>;
+	pinctrl-names = "default";
 
-	pio-ws2812 {
-		compatible = "worldsemi,ws2812-rpi_pico-pio";
-		status = "okay";
-		pinctrl-0 = <&ws2812_pio1_default>;
-		pinctrl-names = "default";
-		bit-waveform = <3>, <3>, <4>;
+	dmas = <&dma 2 RPI_PICO_DMA_SLOT_SPI1_TX 0>,
+	       <&dma 3 RPI_PICO_DMA_SLOT_SPI1_RX 0>;
+	dma-names = "tx", "rx";
 
-		leds_1: ws2812 {
-			status = "okay";
-			gpios = <&gpio0 2 GPIO_ACTIVE_HIGH>;
-			chain-length = <370>;
-			color-mapping = <LED_COLOR_ID_GREEN
-					 LED_COLOR_ID_RED
-					 LED_COLOR_ID_BLUE>;
-			reset-delay = <280>;
-			frequency = <800000>;
-		};
+	leds_2: ws2812@0 {
+		compatible = "worldsemi,ws2812-spi";
+
+		reg = <0>;
+		spi-max-frequency = <DT_FREQ_M(4)>;
+
+		chain-length = <370>;
+		color-mapping = <LED_COLOR_ID_GREEN
+				 LED_COLOR_ID_RED
+				 LED_COLOR_ID_BLUE>;
+		spi-one-frame = <0x70>;
+		spi-zero-frame = <0x40>;
 	};
+};
+
+&dma {
+	status = "okay";
 };
