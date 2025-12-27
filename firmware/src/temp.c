@@ -3,15 +3,17 @@
 #include <zephyr/shell/shell.h>
 #include <zephyr/drivers/sensor.h>
 
+LOG_MODULE_REGISTER(temp, LOG_LEVEL_INF);
+
 static const struct device *temp_dev = DEVICE_DT_GET_OR_NULL(DT_NODELABEL(digi_die_temp));
 
-const struct shell *log_sh;
+static bool temp_log_on;
 
 static void temp_worker(struct k_work *work);
 
 static K_WORK_DELAYABLE_DEFINE(temp_work, temp_worker);
 
-static void print_temp(const struct shell *sh)
+static void print_temp()
 {
 	struct sensor_value val;
 	double temp;
@@ -21,16 +23,16 @@ static void print_temp(const struct shell *sh)
 	sensor_channel_get(temp_dev, SENSOR_CHAN_DIE_TEMP, &val);
 	temp = sensor_value_to_float(&val);
 
-	shell_print(sh, "t=%.1f", temp);
+	LOG_INF("t=%.1f", temp);
 }
 
 static void temp_worker(struct k_work *work)
 {
-	if (!log_sh) {
+	if (!temp_log_on) {
 		return;
 	}
 
-	print_temp(log_sh);
+	print_temp();
 
 	k_work_reschedule(&temp_work, K_SECONDS(1));
 }
@@ -51,7 +53,7 @@ static int cmd_temp(const struct shell *sh, size_t argc, char **argv)
 			return err;
 		}
 
-		log_sh = en ? sh : NULL;
+		temp_log_on = en;
 
 		if (en) {
 			k_work_reschedule(&temp_work, K_SECONDS(1));
@@ -60,7 +62,7 @@ static int cmd_temp(const struct shell *sh, size_t argc, char **argv)
 		return 0;
 	}
 
-	print_temp(sh);
+	print_temp();
 
 	return 0;
 }
