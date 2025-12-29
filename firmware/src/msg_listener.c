@@ -3,7 +3,6 @@
 #include <zephyr/net/socket.h>
 #include <zephyr/posix/arpa/inet.h>
 #include <zephyr/posix/sys/socket.h>
-#include <zephyr/posix/unistd.h>
 
 LOG_MODULE_REGISTER(msg_listener, LOG_LEVEL_INF);
 
@@ -14,7 +13,7 @@ LOG_MODULE_REGISTER(msg_listener, LOG_LEVEL_INF);
 
 static uint8_t buf[1024];
 
-static void wait_ip(void)
+static void wait_up(void)
 {
 	struct net_if *iface;
 
@@ -78,7 +77,7 @@ static int listener_thread4(void)
 	int sock;
 	int ret;
 
-	wait_ip();
+	wait_up();
 
 	ready();
 
@@ -165,7 +164,7 @@ static int listener_thread6(void)
 	int sock;
 	int ret;
 
-	wait_ip();
+	wait_up();
 
 	ready();
 
