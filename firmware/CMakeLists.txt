@@ -7,6 +7,7 @@ project(quakelight)
 
 target_sources(app PRIVATE
 	src/blink.c
+	src/keepalive.c
 	src/leds.c
 	src/main.c
 	src/msg_listener.c
