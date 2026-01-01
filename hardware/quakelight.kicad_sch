@@ -7825,6 +7825,16 @@
 		)
 		(uuid "66e2a693-4029-429f-a7f5-9022f5a49156")
 	)
+	(text "TODO: filters"
+		(exclude_from_sim no)
+		(at 281.94 204.47 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "6a7eafe6-8998-4e00-b5a2-810b4f529498")
+	)
 	(text "SWO"
 		(exclude_from_sim no)
 		(at 171.45 259.08 0)
@@ -7879,6 +7889,16 @@
 		)
 		(uuid "a130909d-48f5-4029-a815-932352a0b155")
 	)
+	(text "TODO: review decoupling"
+		(exclude_from_sim no)
+		(at 213.36 223.52 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "b0c84b4d-2ba7-45c9-9867-ca04a1923434")
+	)
 	(text "irq"
 		(exclude_from_sim no)
 		(at 129.54 163.83 0)
@@ -7888,6 +7908,16 @@
 			)
 		)
 		(uuid "c40a48b1-0a76-43cd-a45b-ebed357fedde")
+	)
+	(text "TODO: cap"
+		(exclude_from_sim no)
+		(at 35.56 95.25 0)
+		(effects
+			(font
+				(size 1.27 1.27)
+			)
+		)
+		(uuid "c6792461-f86f-4710-9bd2-56afc7facb66")
 	)
 	(text "LDO"
 		(exclude_from_sim no)
