@@ -13524,7 +13524,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp yes)
+		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "1f172cdf-ec15-47c7-a41b-f4d3e554abeb")
 		(property "Reference" "C23"
@@ -19357,7 +19357,7 @@
 		(exclude_from_sim no)
 		(in_bom yes)
 		(on_board yes)
-		(dnp yes)
+		(dnp no)
 		(fields_autoplaced yes)
 		(uuid "e43a8fbf-7fbb-48dc-ae22-b670796f42ec")
 		(property "Reference" "C25"
