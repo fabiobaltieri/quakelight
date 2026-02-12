@@ -100,6 +100,10 @@ static void leds_random(int id)
 
 	int ret;
 
+	if (num_pixels == 0) {
+		return;
+	}
+
 	while (1) {
 		for (uint16_t i = 0; i < num_pixels; i++) {
 			uint8_t color;
@@ -134,6 +138,10 @@ static void leds_sequence(int id)
 
 	int ret;
 
+	if (num_pixels == 0) {
+		return;
+	}
+
 	int i = 0;
 	while (1) {
 		memset(pixels, 0, sizeof(*pixels) * num_pixels);
@@ -161,13 +169,15 @@ static void leds_color_sequence(int id)
 
 	int ret;
 
-	int i = 0;
-	int j = 0;
+	if (num_pixels == 0) {
+		return;
+	}
 
 	memset(pixels, 0, sizeof(*pixels) * num_pixels);
 
+	int i = 0;
+	int j = 0;
 	while (1) {
-
 		memcpy(&pixels[i], &colors[j], sizeof(struct led_rgb));
 
 		memcpy(scratch, pixels, sizeof(*pixels) * num_pixels);
@@ -188,7 +198,6 @@ static void leds_thread(void *p1, void *p2, void *p3)
 {
 	int id = (int)p1;
 	const struct device *dev = led_strip[id].dev;
-
 
 	if (!dev) {
 		LOG_INF("LED strip device %d is NULL", id);
