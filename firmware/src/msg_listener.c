@@ -88,10 +88,12 @@ static int listener_thread4(void)
 
 	LOG_INF("open socket 4");
 
+#if 0
+	int xx = 0;
+#endif
 	while (true) {
 		struct sockaddr_in client_addr;
 		socklen_t client_addr_len = sizeof(client_addr);
-		char abuf[NET_IPV4_ADDR_LEN];
 
 		ret = recvfrom(sock, buf, sizeof(buf), 0,
 			       (struct sockaddr *)&client_addr, &client_addr_len);
@@ -100,11 +102,23 @@ static int listener_thread4(void)
 			continue;
 		}
 
+#if 0
+		char abuf[NET_IPV4_ADDR_LEN];
 		LOG_INF("recv from: %s",
 			net_addr_ntop(AF_INET, &client_addr.sin_addr, abuf, sizeof(abuf)));
 		LOG_HEXDUMP_INF(buf, ret, "buf");
+#endif
 
 		blink();
+
+#if 0
+		buf[ret] = '\0';
+		int x = strtol(buf, NULL, 10);
+		if (x != xx + 1) {
+			LOG_INF("sequence error: %d", x);
+		}
+		xx = x;
+#endif
 	}
 
 	return 0;
