@@ -1,0 +1,48 @@
+name: Firmware build
+
+on:
+  push:
+  schedule:
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        board:
+          - quakelight
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Zephyr project
+        uses: zephyrproject-rtos/action-zephyr-setup@main
+        with:
+          app-path: firmware
+          toolchains: arm-zephyr-eabi
+          ccache-cache-key: ${{ matrix.board }}
+
+      - name: Build
+        run: |
+          echo west build -b ${{ matrix.board }} firmware -DCONFIG_COMPILER_WARNINGS_AS_ERRORS=y
+          west build -b ${{ matrix.board }} firmware -DCONFIG_COMPILER_WARNINGS_AS_ERRORS=y
+
+      - name: Firmware artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: firmware_${{ env.BOARD }}
+          path: |
+            build/zephyr/zephyr.elf
+            build/zephyr/zephyr.hex
+            build/zephyr/zephyr.bin
+            build/zephyr/zephyr.signed.hex
+            build/zephyr/zephyr.signed.bin
