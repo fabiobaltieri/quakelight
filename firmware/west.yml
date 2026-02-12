@@ -11,7 +11,9 @@ manifest:
         name-allowlist:
           - cmsis_6
           - hal_espressif
+          - hal_infineon
           - hal_nxp
           - hal_rpi_pico
           - hal_stm32
+          - mbedtls
           - segger

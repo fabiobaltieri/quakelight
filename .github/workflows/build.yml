@@ -19,6 +19,9 @@ jobs:
       matrix:
         board:
           - quakelight
+          - frdm_mcxn947/mcxn947/cpu0
+          - xiao_esp32c3
+          - rpi_pico/rp2040/w
 
     steps:
       - name: Checkout
@@ -28,21 +31,18 @@ jobs:
         uses: zephyrproject-rtos/action-zephyr-setup@main
         with:
           app-path: firmware
-          toolchains: arm-zephyr-eabi
+          toolchains: arm-zephyr-eabi:riscv64-zephyr-elf
           ccache-cache-key: ${{ matrix.board }}
+
+      - name: Fetch the blobs
+        run: |
+          if [ "${{ matrix.board }}" == "xiao_esp32c3" ]; then
+            west blobs fetch hal_espressif
+          elif [ "${{ matrix.board }}" == "rpi_pico/rp2040/w" ]; then
+            west blobs fetch hal_infineon
+          fi
 
       - name: Build
         run: |
           echo west build -b ${{ matrix.board }} firmware -DCONFIG_COMPILER_WARNINGS_AS_ERRORS=y
           west build -b ${{ matrix.board }} firmware -DCONFIG_COMPILER_WARNINGS_AS_ERRORS=y
-
-      - name: Firmware artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: firmware_${{ env.BOARD }}
-          path: |
-            build/zephyr/zephyr.elf
-            build/zephyr/zephyr.hex
-            build/zephyr/zephyr.bin
-            build/zephyr/zephyr.signed.hex
-            build/zephyr/zephyr.signed.bin
