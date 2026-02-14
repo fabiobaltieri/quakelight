@@ -35,12 +35,28 @@ jobs:
           ccache-cache-key: ${{ matrix.board }}
 
       - name: Fetch the blobs
+        shell: python -u {0}
         run: |
-          if [ "${{ matrix.board }}" == "xiao_esp32c3" ]; then
-            west blobs fetch hal_espressif
-          elif [ "${{ matrix.board }}" == "rpi_pico/rp2040/w" ]; then
-            west blobs fetch hal_infineon
-          fi
+          import os
+          import sys
+
+          module = ""
+          if "${{ matrix.board }}" == "xiao_esp32c3":
+            module="hal_espressif"
+          elif "${{ matrix.board }}" == "rpi_pico/rp2040/w":
+            module="hal_infineon"
+
+          if not module:
+            sys.exit(0)
+
+          cmd = f"west blobs -a fetch {module}"
+
+          for i in range(10):
+            print(f"try {i}: {cmd}")
+            if os.system(cmd) == 0:
+              sys.exit(0)
+
+          sys.exit(-1)
 
       - name: Build
         run: |
